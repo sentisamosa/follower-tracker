@@ -1,5 +1,6 @@
 package com.mr.j;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 public class TabFragment extends Fragment {
 
     int position;
+    Context fragmentContext;
     TextView textView;
     LinearLayout initial_ll;
     Button add_user_id;
@@ -31,6 +34,31 @@ public class TabFragment extends Fragment {
     SharedPreferences sharedPreferences;
     CustomAdapter customAdapter;
     int page_no = 1;
+
+    Button.OnClickListener addUserId = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final Dialog dialog = new Dialog(fragmentContext);
+            dialog.setCancelable(false);
+            dialog.setContentView(R.layout.userid_dialog);
+            dialog.setTitle(Constants.dialogTitle);
+
+            final EditText userId = dialog.findViewById(R.id.userId_EditTxt);
+            Button setButton = dialog.findViewById(R.id.setButton);
+
+            setButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editSharedPreferences(Constants.userIdKey, userId.getText().toString());
+                    Toast.makeText(fragmentContext, "UserId set", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
+            });
+
+            Toast.makeText(fragmentContext, R.string.user_id_toast, Toast.LENGTH_LONG).show();
+            dialog.show();
+        }
+    };
 
     public static Fragment getInstance(int position) {
         Bundle bundle = new Bundle();
@@ -45,25 +73,23 @@ public class TabFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         position = getArguments().getInt("pos");
+        fragmentContext = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_tab, container, false);
-
-
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //Todo check if we have a user id saved in shared preferences. if yes - fade the linear layout, else fade the list view
-        //Todo initialize the ui components and make relevant api calls
-
         textView = view.findViewById(R.id.textView);
         initial_ll = view.findViewById(R.id.initial_ll);
         add_user_id = view.findViewById(R.id.add_user_id);
+
+        add_user_id.setOnClickListener(addUserId);
 
         if (getSharedPreferencesValue(Constants.userIdKey).equals("")) {
             initial_ll.setVisibility(View.VISIBLE);
@@ -71,7 +97,7 @@ public class TabFragment extends Fragment {
         } else {
             initial_ll.setVisibility(View.VISIBLE);
             user_list.setVisibility(View.GONE);
-
+            getUsers();
         }
     }
 
@@ -79,7 +105,7 @@ public class TabFragment extends Fragment {
     private String getSharedPreferencesValue(String key) {
 
         try {
-            sharedPreferences = getContext().getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
+            sharedPreferences = fragmentContext.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
             return sharedPreferences.getString(key, "");
         } catch (NullPointerException exception) {
             return "";
@@ -88,7 +114,7 @@ public class TabFragment extends Fragment {
 
     private <T> void editSharedPreferences(String keyName, T value) {
         try {
-            sharedPreferences = getContext().getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
+            sharedPreferences = fragmentContext.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (value instanceof String)
                 editor.putString(keyName, value.toString());
@@ -96,7 +122,7 @@ public class TabFragment extends Fragment {
                 editor.putBoolean(keyName, Boolean.parseBoolean(value.toString()));
             editor.apply();
         } catch (NullPointerException exception) {
-            Toast.makeText(getContext(), "Error occurred while editing shared preferences", Toast.LENGTH_SHORT).show();
+            Toast.makeText(fragmentContext, "Error occurred while editing shared preferences", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -104,7 +130,7 @@ public class TabFragment extends Fragment {
     /*----API Calling methods----*/
     private void getUsers() {
         GitHubAPICaller caller = new GitHubAPICaller(getContext());
-        caller.getResponse(String.format(position == 0? Constants.followerUrl : Constants.followingUrl, Constants.userIdValue, page_no), new VolleyCallback() {
+        caller.getResponse(String.format(position == 0 ? Constants.followerUrl : Constants.followingUrl, Constants.userIdValue, page_no), new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONArray result) {
                 populateListView(result);
@@ -137,19 +163,6 @@ public class TabFragment extends Fragment {
             } else {
                 customAdapter.addAll(users);
                 customAdapter.notifyDataSetChanged();
-            }
-        } catch (JSONException exception) {
-            Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void populateFollowing(JSONArray jsonArray) {
-        try {
-            ArrayList<UserItem> users = new ArrayList<>();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject tempObj = jsonArray.getJSONObject(i);
-                users.add(new UserItem(tempObj.getString(Constants.gitHubUsernameKey), tempObj.getString(Constants.getGitHubUserIdKey), tempObj.getString(Constants.getGitHubUserImageUrl)));
             }
         } catch (JSONException exception) {
             Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
