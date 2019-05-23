@@ -38,6 +38,7 @@ public class TabFragment extends Fragment {
     SharedPreferences sharedPreferences;
     CustomAdapter customAdapter;
     int page_no = 1;
+    boolean stopIncrement = false;
 
     ListView.OnScrollListener getMoreUsers = new AbsListView.OnScrollListener() {
         @Override
@@ -46,7 +47,7 @@ public class TabFragment extends Fragment {
             int count = user_list.getCount();
 
             if (scrollState == SCROLL_STATE_IDLE)
-                if (user_list.getLastVisiblePosition() >= count - threshold) {
+                if (user_list.getLastVisiblePosition() >= count - threshold && !stopIncrement) {
                     page_no++;
                     getUsers();
                 }
@@ -96,7 +97,6 @@ public class TabFragment extends Fragment {
         tabFragment.setArguments(bundle);
         return tabFragment;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -162,10 +162,14 @@ public class TabFragment extends Fragment {
     /*----API Calling methods----*/
     private void getUsers() {
         GitHubAPICaller caller = new GitHubAPICaller(getContext());
+
         caller.getResponse(String.format(position == 0 ? Constants.followerUrl : Constants.followingUrl, getSharedPreferencesValue(Constants.userIdKey), page_no), new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONArray result) {
-                populateListView(result);
+                if (result.length() > 0)
+                    populateListView(result);
+                else
+                    stopIncrement = true;
             }
 
             @Override
