@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -73,8 +74,12 @@ public class TabFragment extends Fragment {
                 public void onClick(View v) {
                     editSharedPreferences(Constants.userIdKey, userId.getText().toString());
                     Toast.makeText(fragmentContext, "UserId set", Toast.LENGTH_SHORT).show();
-//                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-//                    fragmentTransaction.detach(TabFragment.this).attach(TabFragment.this);
+                    FragmentTransaction fragmentTransaction = null;
+                    if (getFragmentManager() != null) {
+                        fragmentTransaction = getFragmentManager().beginTransaction();
+                        fragmentTransaction.detach(TabFragment.this).attach(TabFragment.this).commit();
+                    }
+
                     dialog.dismiss();
                 }
             });
@@ -96,17 +101,19 @@ public class TabFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        position = getArguments().getInt("pos");
+        if (getArguments() != null) {
+            position = getArguments().getInt("pos");
+        }
         fragmentContext = getContext();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_tab, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         textView = view.findViewById(R.id.textView);
