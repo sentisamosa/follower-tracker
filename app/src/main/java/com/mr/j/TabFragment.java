@@ -135,7 +135,6 @@ public class TabFragment extends Fragment {
 
     /*----methods----*/
     private String getSharedPreferencesValue(String key) {
-
         try {
             sharedPreferences = fragmentContext.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
             return sharedPreferences.getString(key, "");

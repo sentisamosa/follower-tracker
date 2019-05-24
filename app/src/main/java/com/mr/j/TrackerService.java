@@ -16,24 +16,14 @@ import org.json.JSONObject;
 
 public class TrackerService extends JobService {
 
-    Handler handler;
-    Runnable runnable;
-    String userId;
+   String userId;
 
     @Override
     public boolean onStartJob(JobParameters params) {
         PersistableBundle bundle = params.getExtras();
         userId = bundle.getString(Constants.userIdKey);
+        getFollowerCount();
 
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                getFollowerCount();
-            }
-        };
-
-        handler = new Handler();
-        handler.postDelayed(runnable, 10 * 1000);
         return true;
     }
 
@@ -55,14 +45,14 @@ public class TrackerService extends JobService {
 
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getBaseContext());
                     mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);
-                    mBuilder.setContentTitle("Notification Alert");
+                    mBuilder.setContentTitle("Follower tracker");
                     mBuilder.setContentText("Hi, You have " + count + " followers on GitHub");
 
                     NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
                     // notificationID allows you to update the notification later on.
                     if (mNotificationManager != null) {
-                        mNotificationManager.notify(123, mBuilder.build());
+                        mNotificationManager.notify((int) (Math.random() * 100), mBuilder.build());
                     }
 
 
@@ -85,5 +75,4 @@ public class TrackerService extends JobService {
             }
         });
     }
-
 }

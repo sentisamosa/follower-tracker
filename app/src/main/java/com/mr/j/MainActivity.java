@@ -3,11 +3,13 @@ package com.mr.j;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -58,11 +60,23 @@ public class MainActivity extends AppCompatActivity {
 
     JobInfo getJobInfo() {
         ComponentName componentName = new ComponentName(MainActivity.this, TrackerService.class);
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putString(Constants.userIdKey, getSharedPreferencesValue(Constants.userIdKey));
 
         return new JobInfo.Builder(281192, componentName)
-//                        .setPeriodic(4 * 60 * 60 * 100)
-                .setPeriodic(30 * 60 * 100)
+                .setPeriodic(15 * 60 * 100)
+                .setExtras(bundle)
                 .setPersisted(true)
                 .build();
+    }
+
+    /*----methods----*/
+    private String getSharedPreferencesValue(String key) {
+        try {
+            SharedPreferences sharedPreferences = MainActivity.this.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
+            return sharedPreferences.getString(key, "");
+        } catch (NullPointerException exception) {
+            return "";
+        }
     }
 }
