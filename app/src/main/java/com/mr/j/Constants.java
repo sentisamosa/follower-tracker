@@ -26,4 +26,16 @@ class Constants {
 
     static String getGitHubUserImageUrl = "avatar_url";
 
+    static int JOB_ID = 281192;
+
+    static String FILE_NAME = "followersList";
+
+    static String DATABASE_NAME = "follower_tracker";
+
+    static String QUERY_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS followers(Username VARCHAR);";
+
+    static String QUERY_INSERT_VALUE = "INSERT INTO followers('%s')";
+
+    static String QUERY_COUNT_ROWS = "SELECT COUNT() FROM followers";
+
 }

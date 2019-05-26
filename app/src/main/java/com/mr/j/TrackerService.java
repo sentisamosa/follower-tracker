@@ -14,12 +14,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+
 public class TrackerService extends JobService {
 
-   String userId;
+    String userId;
+    GitHubAPICaller caller;
+    int count;
+    boolean shouldIncrement;
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        caller = new GitHubAPICaller(getBaseContext());
+        shouldIncrement = true;
+
         PersistableBundle bundle = params.getExtras();
         userId = bundle.getString(Constants.userIdKey);
         getFollowerCount();
@@ -34,14 +43,12 @@ public class TrackerService extends JobService {
     }
 
     private void getFollowerCount() {
-        GitHubAPICaller caller = new GitHubAPICaller(getBaseContext());
-
         caller.getResponse(String.format(Constants.userUrl, userId), new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONArray result) {
                 try {
                     JSONObject userObj = result.getJSONObject(0);
-                    int count = userObj.getInt(Constants.getFollowersCountKey);
+                    count = userObj.getInt(Constants.getFollowersCountKey);
 
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getBaseContext());
                     mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);

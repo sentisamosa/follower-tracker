@@ -5,6 +5,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
@@ -55,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
 
         Switch jobSwitch = findViewById(R.id.service_switch);
+
+        if (isJobServiceOn())
+            jobSwitch.setChecked(true);
+
         jobSwitch.setOnCheckedChangeListener(toggleJob);
     }
 
@@ -63,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putString(Constants.userIdKey, getSharedPreferencesValue(Constants.userIdKey));
 
-        return new JobInfo.Builder(281192, componentName)
+        return new JobInfo.Builder(Constants.JOB_ID, componentName)
                 .setPeriodic(15 * 60 * 100)
                 .setExtras(bundle)
                 .setPersisted(true)
@@ -78,5 +83,26 @@ public class MainActivity extends AppCompatActivity {
         } catch (NullPointerException exception) {
             return "";
         }
+    }
+
+    private boolean isJobServiceOn() {
+        JobScheduler scheduler = (JobScheduler) MainActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+
+        boolean hasBeenScheduled = false;
+
+        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+            if (jobInfo.getId() == Constants.JOB_ID) {
+                hasBeenScheduled = true;
+                break;
+            }
+        }
+
+        return hasBeenScheduled;
+
+    }
+
+    private void createDB(){
+        SQLiteDatabase database = openOrCreateDatabase(Constants.DATABASE_NAME,MODE_PRIVATE,null);
+        database.execSQL(Constants.QUERY_CREATE_TABLE);
     }
 }
