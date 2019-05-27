@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
@@ -16,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,9 +44,14 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         GitHubAPICaller caller = new GitHubAPICaller(MainActivity.this);
                         try {
-                            int count = caller.getFollowerCount(getSharedPreferencesValue(Constants.USER_ID_KEY));
+                            int count = caller.getFollowerCount(Constants.getSharedPreferencesValue(Constants.USER_ID_KEY, MainActivity.this));
                             DBHelper helper = new DBHelper(getApplicationContext());
-                            helper.insertInCounts(count);
+                            helper.createDB();
+                            SharedPreferences sharedPreferences = MainActivity.this.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putInt(Constants.FOLLOWER_COUNT, count);
+                            editor.apply();
+
                             fillFollowersInDB(count);
                         } catch (Exception e) {
                             Log.e("Error", "Error in check changed");
@@ -53,14 +60,13 @@ public class MainActivity extends AppCompatActivity {
                 };
                 thread.start();
 
-                //Creating the job for tracking the followers
-                int resultCode = jobScheduler != null ? jobScheduler.schedule(getJobInfo()) : 0;
-                if (resultCode == JobScheduler.RESULT_SUCCESS) {
-                    Toast.makeText(MainActivity.this, "Tracker Started", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MainActivity.this, "Error starting tracker", Toast.LENGTH_SHORT).show();
-                }
-
+//                //Creating the job for tracking the followers
+//                int resultCode = jobScheduler != null ? jobScheduler.schedule(getJobInfo()) : 0;
+//                if (resultCode == JobScheduler.RESULT_SUCCESS) {
+//                    Toast.makeText(MainActivity.this, "Tracker Started", Toast.LENGTH_SHORT).show();
+//                } else {
+//                    Toast.makeText(MainActivity.this, "Error starting tracker", Toast.LENGTH_SHORT).show();
+//                }
 
             } else {
                 jobScheduler.cancelAll();
@@ -96,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
     JobInfo getJobInfo() {
         ComponentName componentName = new ComponentName(MainActivity.this, TrackerService.class);
         PersistableBundle bundle = new PersistableBundle();
-        bundle.putString(Constants.USER_ID_KEY, getSharedPreferencesValue(Constants.USER_ID_KEY));
+        bundle.putString(Constants.USER_ID_KEY, Constants.getSharedPreferencesValue(Constants.USER_ID_KEY, MainActivity.this));
 
         return new JobInfo.Builder(Constants.JOB_ID, componentName)
                 .setPeriodic(15 * 60 * 100)
@@ -106,15 +112,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /*----methods----*/
-    private String getSharedPreferencesValue(String key) {
-        try {
-            SharedPreferences sharedPreferences = MainActivity.this.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-            return sharedPreferences.getString(key, "");
-        } catch (NullPointerException exception) {
-            return "";
-        }
-    }
-
     private boolean isJobServiceOn() {
         JobScheduler scheduler = (JobScheduler) MainActivity.this.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
@@ -134,6 +131,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fillFollowersInDB(int count) {
-        //Todo run a loop to count/30 + 1 and call the insertintofollowers everytime the caller returns list of users
+        GitHubAPICaller caller = new GitHubAPICaller(MainActivity.this);
+        final DBHelper dbHelper = new DBHelper(getApplicationContext());
+
+        for (int page_no = 1; page_no < ((int) count / 30) + 1; page_no++) {
+            caller.getResponse(String.format(Constants.FOLLOWER_URL, Constants.getSharedPreferencesValue(Constants.USER_ID_KEY, MainActivity.this), page_no), new VolleyCallback() {
+                @Override
+                public void onSuccessResponse(JSONArray result) {
+                    StringBuilder builder = new StringBuilder(Constants.QUERY_INSERT_IN_FOLLOWERS);
+                    for (int i = 0; i < result.length(); i++) {
+                        try {
+                            String temp = "('" + result.getJSONObject(i).getString(Constants.GET_GITHUB_USERNAME_KEY) + "'),";
+                            builder.append(temp);
+                        } catch (JSONException e) {
+                            Log.e("error", e.getMessage());
+                        }
+                    }
+                    builder.deleteCharAt(builder.length() - 1);
+                    dbHelper.insertInFollowers(builder.toString() + ";");
+                }
+
+                @Override
+                public void onErrorResponse(String error) {
+
+                }
+
+                @Override
+                public void onImageResponse(Bitmap image) {
+
+                }
+            });
+        }
+
     }
 }

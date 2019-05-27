@@ -73,7 +73,7 @@ public class TabFragment extends Fragment {
             setButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editSharedPreferences(Constants.USER_ID_KEY, userId.getText().toString());
+                    Constants.editSharedPreferences(Constants.USER_ID_KEY, userId.getText().toString(), getContext());
                     Toast.makeText(fragmentContext, "UserId set", Toast.LENGTH_SHORT).show();
                     FragmentTransaction fragmentTransaction = null;
                     if (getFragmentManager() != null) {
@@ -123,7 +123,7 @@ public class TabFragment extends Fragment {
         add_user_id.setOnClickListener(addUserId);
         user_list.setOnScrollListener(getMoreUsers);
 
-        if (getSharedPreferencesValue(Constants.USER_ID_KEY).equals("")) {
+        if (Constants.getSharedPreferencesValue(Constants.USER_ID_KEY, getContext()).equals("")) {
             initial_ll.setVisibility(View.VISIBLE);
             user_list.setVisibility(View.INVISIBLE);
         } else {
@@ -133,36 +133,11 @@ public class TabFragment extends Fragment {
         }
     }
 
-    /*----methods----*/
-    private String getSharedPreferencesValue(String key) {
-        try {
-            sharedPreferences = fragmentContext.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-            return sharedPreferences.getString(key, "");
-        } catch (NullPointerException exception) {
-            return "";
-        }
-    }
-
-    private <T> void editSharedPreferences(String keyName, T value) {
-        try {
-            sharedPreferences = fragmentContext.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            if (value instanceof String)
-                editor.putString(keyName, value.toString());
-            else
-                editor.putBoolean(keyName, Boolean.parseBoolean(value.toString()));
-            editor.apply();
-        } catch (NullPointerException exception) {
-            Toast.makeText(fragmentContext, "Error occurred while editing shared preferences", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
     /*----API Calling methods----*/
     private void getUsers() {
         GitHubAPICaller caller = new GitHubAPICaller(getContext());
 
-        caller.getResponse(String.format(position == 0 ? Constants.FOLLOWER_URL : Constants.FOLLOWING_URL, getSharedPreferencesValue(Constants.USER_ID_KEY), page_no), new VolleyCallback() {
+        caller.getResponse(String.format(position == 0 ? Constants.FOLLOWER_URL : Constants.FOLLOWING_URL, Constants.getSharedPreferencesValue(Constants.USER_ID_KEY, getContext()), page_no), new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONArray result) {
                 if (result.length() > 0)
@@ -189,7 +164,7 @@ public class TabFragment extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject tempObj = jsonArray.getJSONObject(i);
-                users.add(new UserItem(tempObj.getString(Constants.GITHUB_USERNAME_KEY), tempObj.getString(Constants.GET_GITHUB_USER_ID_KEY), tempObj.getString(Constants.GET_GITHUB_USER_IMAGE_URL)));
+                users.add(new UserItem(tempObj.getString(Constants.GET_GITHUB_USERNAME_KEY), tempObj.getString(Constants.GET_GITHUB_USER_ID_KEY), tempObj.getString(Constants.GET_GITHUB_USER_IMAGE_URL)));
             }
 
             if (customAdapter == null) {
