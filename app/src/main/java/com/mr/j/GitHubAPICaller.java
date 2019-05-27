@@ -2,6 +2,7 @@ package com.mr.j;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -14,11 +15,17 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonArrayRequest;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 class GitHubAPICaller {
 
-    private RequestQueue requestQueue;
-    JsonArrayRequest arrayRequest;
     private Context context;
 
     GitHubAPICaller(Context context) {
@@ -26,8 +33,6 @@ class GitHubAPICaller {
     }
 
     void getResponse(String url, final VolleyCallback callback) {
-
-        requestQueue = Singleton.getInstance(context).getRequestQueue();
 
         JsonArrayRequest jsonObjectRequest = new JsonArrayRequest(Request.Method.GET, url, "", new Response.Listener<JSONArray>() {
             @Override
@@ -42,7 +47,6 @@ class GitHubAPICaller {
         });
 
         Singleton.getInstance(context).addToRequestQueue(jsonObjectRequest);
-
     }
 
     void getImage(String url, final VolleyCallback callback) {
@@ -59,5 +63,23 @@ class GitHubAPICaller {
                 callback.onErrorResponse(error.getMessage());
             }
         });
+    }
+
+    int getFollowerCount(String userId) throws IOException, JSONException {
+        URL object = new URL(String.format(Constants.USER_URL, userId));
+        HttpURLConnection connection = (HttpURLConnection) object.openConnection();
+
+        BufferedReader input = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String inputLine;
+        while ((inputLine = input.readLine()) != null) {
+            response.append(inputLine);
+        }
+
+        input.close();
+        connection.disconnect();
+
+        return Integer.parseInt((new JSONObject(response.toString())).get("followers").toString());
+
     }
 }

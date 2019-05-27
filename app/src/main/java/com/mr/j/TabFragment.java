@@ -65,7 +65,7 @@ public class TabFragment extends Fragment {
             final Dialog dialog = new Dialog(fragmentContext);
             dialog.setCancelable(false);
             dialog.setContentView(R.layout.userid_dialog);
-            dialog.setTitle(Constants.dialogTitle);
+            dialog.setTitle(Constants.DIALOG_TITLE);
 
             final EditText userId = dialog.findViewById(R.id.userId_EditTxt);
             Button setButton = dialog.findViewById(R.id.setButton);
@@ -73,7 +73,7 @@ public class TabFragment extends Fragment {
             setButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editSharedPreferences(Constants.userIdKey, userId.getText().toString());
+                    editSharedPreferences(Constants.USER_ID_KEY, userId.getText().toString());
                     Toast.makeText(fragmentContext, "UserId set", Toast.LENGTH_SHORT).show();
                     FragmentTransaction fragmentTransaction = null;
                     if (getFragmentManager() != null) {
@@ -123,7 +123,7 @@ public class TabFragment extends Fragment {
         add_user_id.setOnClickListener(addUserId);
         user_list.setOnScrollListener(getMoreUsers);
 
-        if (getSharedPreferencesValue(Constants.userIdKey).equals("")) {
+        if (getSharedPreferencesValue(Constants.USER_ID_KEY).equals("")) {
             initial_ll.setVisibility(View.VISIBLE);
             user_list.setVisibility(View.INVISIBLE);
         } else {
@@ -136,7 +136,7 @@ public class TabFragment extends Fragment {
     /*----methods----*/
     private String getSharedPreferencesValue(String key) {
         try {
-            sharedPreferences = fragmentContext.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
+            sharedPreferences = fragmentContext.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
             return sharedPreferences.getString(key, "");
         } catch (NullPointerException exception) {
             return "";
@@ -145,7 +145,7 @@ public class TabFragment extends Fragment {
 
     private <T> void editSharedPreferences(String keyName, T value) {
         try {
-            sharedPreferences = fragmentContext.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
+            sharedPreferences = fragmentContext.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             if (value instanceof String)
                 editor.putString(keyName, value.toString());
@@ -162,7 +162,7 @@ public class TabFragment extends Fragment {
     private void getUsers() {
         GitHubAPICaller caller = new GitHubAPICaller(getContext());
 
-        caller.getResponse(String.format(position == 0 ? Constants.followerUrl : Constants.followingUrl, getSharedPreferencesValue(Constants.userIdKey), page_no), new VolleyCallback() {
+        caller.getResponse(String.format(position == 0 ? Constants.FOLLOWER_URL : Constants.FOLLOWING_URL, getSharedPreferencesValue(Constants.USER_ID_KEY), page_no), new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONArray result) {
                 if (result.length() > 0)
@@ -189,7 +189,7 @@ public class TabFragment extends Fragment {
 
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject tempObj = jsonArray.getJSONObject(i);
-                users.add(new UserItem(tempObj.getString(Constants.gitHubUsernameKey), tempObj.getString(Constants.getGitHubUserIdKey), tempObj.getString(Constants.getGitHubUserImageUrl)));
+                users.add(new UserItem(tempObj.getString(Constants.GITHUB_USERNAME_KEY), tempObj.getString(Constants.GET_GITHUB_USER_ID_KEY), tempObj.getString(Constants.GET_GITHUB_USER_IMAGE_URL)));
             }
 
             if (customAdapter == null) {

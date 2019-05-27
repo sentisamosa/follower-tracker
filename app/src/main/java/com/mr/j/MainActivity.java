@@ -11,10 +11,21 @@ import android.os.PersistableBundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,12 +36,29 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
+                //Getting the followers count for the given user
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        GitHubAPICaller caller = new GitHubAPICaller(MainActivity.this);
+                        try {
+                            int count = caller.getFollowerCount(getSharedPreferencesValue(Constants.USER_ID_KEY));
+
+                        } catch (Exception e) {
+                            Log.e("Error", "Error in check changed");
+                        }
+                    }
+                };
+                thread.start();
+
+                //Creating the job for tracking the followers
                 int resultCode = jobScheduler != null ? jobScheduler.schedule(getJobInfo()) : 0;
                 if (resultCode == JobScheduler.RESULT_SUCCESS) {
                     Toast.makeText(MainActivity.this, "Tracker Started", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, "Error starting tracker", Toast.LENGTH_SHORT).show();
                 }
+
 
             } else {
                 jobScheduler.cancelAll();
@@ -66,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
     JobInfo getJobInfo() {
         ComponentName componentName = new ComponentName(MainActivity.this, TrackerService.class);
         PersistableBundle bundle = new PersistableBundle();
-        bundle.putString(Constants.userIdKey, getSharedPreferencesValue(Constants.userIdKey));
+        bundle.putString(Constants.USER_ID_KEY, getSharedPreferencesValue(Constants.USER_ID_KEY));
 
         return new JobInfo.Builder(Constants.JOB_ID, componentName)
                 .setPeriodic(15 * 60 * 100)
@@ -78,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     /*----methods----*/
     private String getSharedPreferencesValue(String key) {
         try {
-            SharedPreferences sharedPreferences = MainActivity.this.getSharedPreferences(Constants.preferenceName, Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = MainActivity.this.getSharedPreferences(Constants.PREFERENCE_NAME, Context.MODE_PRIVATE);
             return sharedPreferences.getString(key, "");
         } catch (NullPointerException exception) {
             return "";
@@ -90,19 +118,16 @@ public class MainActivity extends AppCompatActivity {
 
         boolean hasBeenScheduled = false;
 
-        for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
-            if (jobInfo.getId() == Constants.JOB_ID) {
-                hasBeenScheduled = true;
-                break;
+        if (scheduler != null) {
+            for (JobInfo jobInfo : scheduler.getAllPendingJobs()) {
+                if (jobInfo.getId() == Constants.JOB_ID) {
+                    hasBeenScheduled = true;
+                    break;
+                }
             }
         }
 
         return hasBeenScheduled;
 
-    }
-
-    private void createDB(){
-        SQLiteDatabase database = openOrCreateDatabase(Constants.DATABASE_NAME,MODE_PRIVATE,null);
-        database.execSQL(Constants.QUERY_CREATE_TABLE);
     }
 }

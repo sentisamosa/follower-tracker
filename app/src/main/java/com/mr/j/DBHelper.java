@@ -22,10 +22,10 @@ class DBHelper {
         database.execSQL(String.format(Constants.QUERY_INSERT_VALUE, value));
     }
 
-    int getRowCount(){
+    int getRowCount() {
         int count;
         Cursor resultSet = database.rawQuery(Constants.QUERY_COUNT_ROWS, null);
-        count =  resultSet.getInt(0);
+        count = resultSet.getInt(0);
         resultSet.close();
         return count;
     }

@@ -13,6 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class TrackerService extends JobService {
 
     String userId;
@@ -26,7 +31,7 @@ public class TrackerService extends JobService {
         shouldIncrement = true;
 
         PersistableBundle bundle = params.getExtras();
-        userId = bundle.getString(Constants.userIdKey);
+        userId = bundle.getString(Constants.USER_ID_KEY);
         getFollowerCount();
 
         return true;
@@ -38,13 +43,14 @@ public class TrackerService extends JobService {
         return false;
     }
 
+
     private void getFollowerCount() {
-        caller.getResponse(String.format(Constants.userUrl, userId), new VolleyCallback() {
+        caller.getResponse(String.format(Constants.USER_URL, userId), new VolleyCallback() {
             @Override
             public void onSuccessResponse(JSONArray result) {
                 try {
                     JSONObject userObj = result.getJSONObject(0);
-                    count = userObj.getInt(Constants.getFollowersCountKey);
+                    count = userObj.getInt(Constants.GET_FOLLOWERS_COUNT_KEY);
 
                     NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getBaseContext());
                     mBuilder.setSmallIcon(R.drawable.ic_launcher_foreground);
