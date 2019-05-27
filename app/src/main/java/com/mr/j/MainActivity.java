@@ -43,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
                         GitHubAPICaller caller = new GitHubAPICaller(MainActivity.this);
                         try {
                             int count = caller.getFollowerCount(getSharedPreferencesValue(Constants.USER_ID_KEY));
-
+                            DBHelper helper = new DBHelper(getApplicationContext());
+                            helper.insertInCounts(count);
+                            fillFollowersInDB(count);
                         } catch (Exception e) {
                             Log.e("Error", "Error in check changed");
                         }
@@ -129,5 +131,9 @@ public class MainActivity extends AppCompatActivity {
 
         return hasBeenScheduled;
 
+    }
+
+    private void fillFollowersInDB(int count) {
+        //Todo run a loop to count/30 + 1 and call the insertintofollowers everytime the caller returns list of users
     }
 }

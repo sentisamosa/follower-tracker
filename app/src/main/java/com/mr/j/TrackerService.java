@@ -43,7 +43,6 @@ public class TrackerService extends JobService {
         return false;
     }
 
-
     private void getFollowerCount() {
         caller.getResponse(String.format(Constants.USER_URL, userId), new VolleyCallback() {
             @Override

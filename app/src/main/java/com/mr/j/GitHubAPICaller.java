@@ -80,6 +80,5 @@ class GitHubAPICaller {
         connection.disconnect();
 
         return Integer.parseInt((new JSONObject(response.toString())).get("followers").toString());
-
     }
 }

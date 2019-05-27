@@ -25,8 +25,8 @@ class Constants {
     /*-----Database related constants-----*/
     static String DATABASE_NAME = "follower_tracker";
     static String QUERY_CREATE_TABLE = "CREATE TABLE IF NOT EXISTS followers(Username VARCHAR);";
-    static String QUERY_CREATE_COUNT_TABLE = "CREATE TABLE IF NOT EXISTS counts(Count INTEGER, Date DATETIME);";
-    static String QUERY_INSERT_VALUE = "INSERT INTO followers('%s')";
+    static String QUERY_CREATE_COUNT_TABLE = "CREATE TABLE IF NOT EXISTS counts(Count INTEGER, UpdatedOn DATETIME);";
+    static String QUERY_INSERT_IN_FOLLOWERS = "INSERT INTO followers('%s')";
+    static String QUERY_INSERT_IN_COUNTS = "INSERT INTO followers('%s',GetDate())";
     static String QUERY_COUNT_ROWS = "SELECT COUNT() FROM followers";
-
 }
