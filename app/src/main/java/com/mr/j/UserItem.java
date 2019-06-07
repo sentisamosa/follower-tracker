@@ -11,7 +11,7 @@ class UserItem {
     UserItem(String username, String userid, String userImageUrl){
         this.username = username;
         this.userid = userid;
-        this.userImageUrl = userImageUrl;
+        this.userImageUrl    = userImageUrl;
     }
 
     String getUsername() {
