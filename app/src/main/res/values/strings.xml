@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Follower Tracker Service</string>
-    <string name="dialog_button_text">Set</string>
-    <string name="add_user">No user ID found. Please tap <b>+</b> to add your user id.</string>
-    <string name="dummy_text_2">jhn_doe</string>
-    <string name="dummy_text_3">Dummy</string>
-    <string name="toggle_button_text">Tracker Service</string>
-    <string name="user_id_toast">Please enter your GitHub user Id to continue</string>
-</resources>
