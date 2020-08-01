@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header = ({ dark, children, className, pages }) => {
   dark = !!dark ? "dark" : "light";
@@ -17,9 +18,9 @@ const Header = ({ dark, children, className, pages }) => {
           <ul className="navbar-nav mr-auto">
             {pages.map((item, key) => (
               <li className="nav-item" key={key}>
-                <a href={item.Path} className="nav-link">
+                <Link to={item.Path} className="nav-link">
                   {item.Name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

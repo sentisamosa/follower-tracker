@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import Header from "./shared/Header";
 
 const pages = [
-  { Name: "I Follow", Path: "/ifollow" },
-  { Name: "Follow Me", Path: "/followme" },
-  { Name: "Following Delta", Path: "/delta" }
+  { Name: "Following", Path: "/ifollow" },
+  { Name: "Following", Path: "/followme" },
+  { Name: "Who Don't Follow", Path: "/delta" }
 ];
 
 class App extends Component {
