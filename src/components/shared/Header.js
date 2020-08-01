@@ -6,7 +6,8 @@ const Header = ({ dark, children, className, pages }) => {
     <nav
       className={
         `Header navbar navbar-${dark} bg-${dark}` +
-        (className ? " " + className : "")
+        (className ? " " + className : "") +
+        (pages && pages.length > 0 ? " navbar-expand-lg" : "")
       }
     >
       <span className="navbar-brand">{children}</span>

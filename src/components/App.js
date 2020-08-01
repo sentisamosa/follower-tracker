@@ -13,7 +13,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header dark={true}>Follower Tracker</Header>
+        <Header dark={true} pages={pages}>Follower Tracker</Header>
       </div>
     );
   }
