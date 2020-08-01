@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import Header from "./shared/Header";
+import { Switch, Route } from "react-router-dom";
+import Following from "./Following";
+import Follower from "./Follower";
 
 const pages = [
   { Name: "Following", Path: "/ifollow" },
@@ -14,6 +17,15 @@ class App extends Component {
         <Header dark={false} pages={pages}>
           Follower Tracker
         </Header>
+        <Switch>
+          <Route path="/ifollow">
+            <Following />
+          </Route>
+          <Route path="/followme">
+            <Follower />
+          </Route>
+          <Route path="/delta"></Route>
+        </Switch>
       </div>
     );
   }
