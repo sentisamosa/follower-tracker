@@ -8,12 +8,12 @@ const pages = [
 ];
 
 class App extends Component {
-  //navigationItems = ['Follower Tracker', 'I Follow', 'Follow Me', "Doesn't Follow Me"];
-
   render() {
     return (
       <div>
-        <Header dark={true} pages={pages}>Follower Tracker</Header>
+        <Header dark={false} pages={pages}>
+          Follower Tracker
+        </Header>
       </div>
     );
   }
