@@ -4,6 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import Following from "./Following";
 import Follower from "./Follower";
 import NotFollowing from "./NotFollowing";
+import Login from "./Login";
 
 const pages = [
   {
