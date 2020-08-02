@@ -39,11 +39,7 @@ class App extends Component {
         <Switch>
           {pages.map((item, key) => (
             <Route path={item.Path}>
-              <div className="container">
-                <h3>{item.Name}</h3>
-                <p>This is the {item.Name} page</p>
-                {item.PageItem}
-              </div>
+              <div className="container">{item.PageItem}</div>
             </Route>
           ))}
           <Route>

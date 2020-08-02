@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { GetTestData } from "../services/TestService";
+import { GetUserFollowers } from "../services/GitHubService";
 class Follower extends Component {
   state = {
-    Data: []
+    FollowerData: []
   };
 
   componentDidMount() {
-    GetTestData().then(res =>
+    GetUserFollowers("kshtj24").then(res =>
       this.setState({
-        Data: res
+        FollowerData: res
       })
     );
   }
@@ -16,7 +16,7 @@ class Follower extends Component {
   render() {
     return (
       <div className="row">
-        {this.state.Data.map((item, key) => (
+        {this.state.FollowerData.map((item, key) => (
           <div class="col-sm-4 my-3">
             <div className="card">
               <div className="card-header">{item.login}</div>
