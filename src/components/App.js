@@ -6,25 +6,27 @@ import Follower from "./Follower";
 
 const pages = [
   { Name: "Following", Path: "/ifollow" },
-  { Name: "Following", Path: "/followme" },
-  { Name: "Who Don't Follow", Path: "/delta" }
+  { Name: "Follower", Path: "/followme" },
+  { Name: "Who Don't Follow", Path: "/notfollowingback" }
 ];
 
 class App extends Component {
   render() {
     return (
       <div>
-        <Header dark={false} pages={pages}>
+        <Header dark={true} pages={pages}>
           Follower Tracker
         </Header>
         <Switch>
-          <Route path="/ifollow">
-            <Following />
+          {pages.map((item, key) => (
+            <Route path={item.Path}>
+              <h3>{item.Name}</h3>
+              <p>This is the {item.Name} page</p>
+            </Route>
+          ))}
+          <Route>
+            <h3 className="bg-danger">Error 403</h3>
           </Route>
-          <Route path="/followme">
-            <Follower />
-          </Route>
-          <Route path="/delta"></Route>
         </Switch>
       </div>
     );

@@ -1,12 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 
-//Needs to be converted to RCC
-const Follower = () => {
-  return (
-    <div>
-      <h1 className="bg-warning">Followers</h1>
-    </div>
-  );
-};
+class Follower extends Component {
+  render() {
+    return <></>;
+  }
+}
 
 export default Follower;

@@ -1,12 +1,9 @@
-import React from "react";
+import React, { Component } from "react";
 
-//Needs to be converted to RCC
-const Following = () => {
-  return (
-    <div>
-      <h1 className="bg-primary">Following</h1>
-    </div>
-  );
-};
+class Following extends Component {
+  render() {
+    return <div></div>;
+  }
+}
 
 export default Following;
