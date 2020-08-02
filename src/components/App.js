@@ -5,9 +5,9 @@ import Following from "./Following";
 import Follower from "./Follower";
 
 const pages = [
-  { Name: "Following", Path: "/ifollow" },
-  { Name: "Follower", Path: "/followme" },
-  { Name: "Who Don't Follow", Path: "/notfollowingback" }
+  { Name: "Following", Path: "/ifollow", PageItem: <Following/>},
+  { Name: "Follower", Path: "/followme", PageItem: <Follower/>},
+  { Name: "Who Don't Follow", Path: "/notfollowingback", PageItem:  }
 ];
 
 class App extends Component {
