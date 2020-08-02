@@ -3,11 +3,29 @@ import Header from "./shared/Header";
 import { Switch, Route } from "react-router-dom";
 import Following from "./Following";
 import Follower from "./Follower";
+import NotFollowing from "./NotFollowing";
 
 const pages = [
-  { Name: "Following", Path: "/ifollow", PageItem: <Following/>},
-  { Name: "Follower", Path: "/followme", PageItem: <Follower/>},
-  { Name: "Who Don't Follow", Path: "/notfollowingback", PageItem:  }
+  {
+    Name: "Login",
+    Path: "/login",
+    PageItem: <Login />
+  },
+  {
+    Name: "Following",
+    Path: "/ifollow",
+    PageItem: <Following />
+  },
+  {
+    Name: "Follower",
+    Path: "/followme",
+    PageItem: <Follower />
+  },
+  {
+    Name: "Who Don't Follow",
+    Path: "/notfollowingback",
+    PageItem: <NotFollowing />
+  }
 ];
 
 class App extends Component {
@@ -22,6 +40,7 @@ class App extends Component {
             <Route path={item.Path}>
               <h3>{item.Name}</h3>
               <p>This is the {item.Name} page</p>
+              {item.PageItem}
             </Route>
           ))}
           <Route>
