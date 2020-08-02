@@ -15,16 +15,18 @@ class Follower extends Component {
 
   render() {
     return (
-      <div>
+      <div className="row">
         {this.state.Data.map((item, key) => (
-          <div class="row">
-            <div class="col-sm-6"></div>
+          <div class="col-sm-4 my-3">
             <div className="card">
               <div className="card-header">{item.login}</div>
               <div className="card-body">
                 <div className="card-text">
                   <p>{item.id}</p>
                   <p>{item.type}</p>
+                  <a href={item.html_url} className="btn btn-primary">
+                    View
+                  </a>
                 </div>
               </div>
             </div>
