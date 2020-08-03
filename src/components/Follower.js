@@ -27,6 +27,9 @@ class Follower extends Component {
                   <a href={item.html_url} className="btn btn-primary">
                     View
                   </a>
+                  <a href={item.html_url} className="btn btn-primary">
+                    Follow
+                  </a>
                 </div>
               </div>
             </div>
