@@ -22,6 +22,7 @@ class Follower extends Component {
               <div className="card-header">{item.login}</div>
               <div className="card-body">
                 <div className="card-text">
+                  <img src={item.avatar_url} alt={key} />
                   <p>{item.id}</p>
                   <p>{item.type}</p>
                   <a href={item.html_url} className="btn btn-primary">
