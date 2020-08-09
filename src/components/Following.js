@@ -17,15 +17,18 @@ class Following extends Component {
     return (
       <div className="row">
         {this.state.FollowingData.map((item, key) => (
-          <div class="col-sm-4 my-3">
+          <div className="col-sm-4 my-3" key={key}>
             <div className="card">
               <div className="card-header">{item.login}</div>
               <div className="card-body">
                 <div className="card-text">
-                  <img src={item.avatar_url} alt={key} />
+                  <img
+                    src={item.avatar_url}
+                    className="mg-thumbnail img-fluid"
+                    alt={item.key}
+                  />
 
                   <p>{item.id}</p>
-                  <p>{item.type}</p>
                   <a href={item.html_url} className="btn btn-primary">
                     View
                   </a>

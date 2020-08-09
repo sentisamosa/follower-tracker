@@ -38,7 +38,7 @@ class App extends Component {
         </Header>
         <Switch>
           {pages.map((item, key) => (
-            <Route path={item.Path}>
+            <Route path={item.Path} key={key}>
               <div className="container">{item.PageItem}</div>
             </Route>
           ))}

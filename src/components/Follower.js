@@ -17,18 +17,29 @@ class Follower extends Component {
     return (
       <div className="row">
         {this.state.FollowerData.map((item, key) => (
-          <div class="col-sm-4 my-3">
+          <div className="col-sm-4 my-3" key={key}>
             <div className="card">
               <div className="card-header">{item.login}</div>
               <div className="card-body">
                 <div className="card-text">
-                  <img src={item.avatar_url} alt={key} />
+                  <img
+                    src={item.avatar_url}
+                    alt={item.key}
+                    className="img-thumbnail img-fluid"
+                  />
                   <p>{item.id}</p>
-                  <p>{item.type}</p>
-                  <a href={item.html_url} className="btn btn-primary">
+                  <a
+                    href={item.html_url}
+                    className="btn btn-outline-primary"
+                    role="button"
+                  >
                     View
                   </a>
-                  <a href={item.html_url} className="btn btn-primary">
+                  <a
+                    href="followme#"
+                    className="btn btn-outline-primary ml-1"
+                    role="button"
+                  >
                     Follow
                   </a>
                 </div>
