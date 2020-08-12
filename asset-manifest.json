@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/follower-tracker/static/js/main.b52377b1.chunk.js",
-    "main.js.map": "/follower-tracker/static/js/main.b52377b1.chunk.js.map",
+    "main.js": "/follower-tracker/static/js/main.86b20703.chunk.js",
+    "main.js.map": "/follower-tracker/static/js/main.86b20703.chunk.js.map",
     "runtime-main.js": "/follower-tracker/static/js/runtime-main.1f823e9a.js",
     "runtime-main.js.map": "/follower-tracker/static/js/runtime-main.1f823e9a.js.map",
     "static/js/2.b1cdea93.chunk.js": "/follower-tracker/static/js/2.b1cdea93.chunk.js",
     "static/js/2.b1cdea93.chunk.js.map": "/follower-tracker/static/js/2.b1cdea93.chunk.js.map",
     "index.html": "/follower-tracker/index.html",
-    "precache-manifest.e0db08fd3572d51b54bc2e3ecbab3570.js": "/follower-tracker/precache-manifest.e0db08fd3572d51b54bc2e3ecbab3570.js",
+    "precache-manifest.6b7143faa2f11bfb25851e3eb554c0e4.js": "/follower-tracker/precache-manifest.6b7143faa2f11bfb25851e3eb554c0e4.js",
     "service-worker.js": "/follower-tracker/service-worker.js",
     "static/js/2.b1cdea93.chunk.js.LICENSE.txt": "/follower-tracker/static/js/2.b1cdea93.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.1f823e9a.js",
     "static/js/2.b1cdea93.chunk.js",
-    "static/js/main.b52377b1.chunk.js"
+    "static/js/main.86b20703.chunk.js"
   ]
 }
