@@ -2,15 +2,40 @@ import React, { Component } from "react";
 import { GetUserFollowers } from "../services/GitHubService";
 class Follower extends Component {
   state = {
-    FollowerData: []
+    FollowerData: [],
+    Page: 1
   };
 
   componentDidMount() {
-    GetUserFollowers("kshtj24").then(res =>
+    GetUserFollowers("kshtj24", this.state.Page).then(res =>
       this.setState({
-        FollowerData: res
+        FollowerData: res,
+        Page: 1
       })
     );
+  }
+
+  handleNextClick() {
+    var pageNum = this.state.Page + 1;
+    GetUserFollowers("kshtj24", pageNum).then(res =>
+      this.setState({
+        FollowerData: res,
+        Page: pageNum
+      })
+    );
+  }
+
+  handlePreviousClick() {
+    if (this.state.Page > 1) {
+      var pageNum = this.state.Page - 1;
+
+      GetUserFollowers("kshtj24", pageNum).then(res =>
+        this.setState({
+          FollowerData: res,
+          Page: pageNum
+        })
+      );
+    }
   }
 
   render() {
@@ -19,15 +44,14 @@ class Follower extends Component {
         {this.state.FollowerData.map((item, key) => (
           <div className="col-sm-4 my-3" key={key}>
             <div className="card">
-              <div className="card-header">{item.login}</div>
               <div className="card-body">
                 <div className="card-text">
                   <img
                     src={item.avatar_url}
                     alt={item.key}
-                    className="img-thumbnail img-fluid"
+                    className="img-thumbnail img-fluid w-50 float-left mr-2"
                   />
-                  <p>{item.id}</p>
+                  <p>{item.login}</p>
                   <a
                     href={item.html_url}
                     className="btn btn-outline-primary"
@@ -47,6 +71,20 @@ class Follower extends Component {
             </div>
           </div>
         ))}
+        <div className="container fixed-bottom mb-2 text-right">
+          <button
+            className="btn btn-dark btn-sm"
+            onClick={this.handlePreviousClick}
+          >
+            Previous
+          </button>
+          <button
+            className="btn btn-dark btn-sm ml-3"
+            onClick={this.handleNextClick}
+          >
+            Next
+          </button>
+        </div>
       </div>
     );
   }

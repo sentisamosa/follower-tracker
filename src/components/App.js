@@ -7,15 +7,16 @@ import NotFollowing from "./NotFollowing";
 import Login from "./Login";
 
 const pages = [
-  {
-    Name: "Login",
-    Path: "/",
-    PageItem: <Login />,
-    Exact: true
-  },
+  // {
+  //   Name: "Login",
+  //   Path: "/",
+  //   PageItem: <Login />,
+  //   Exact: true
+  // },
   {
     Name: "Following",
-    Path: "/ifollow",
+    //Path: "/ifollow",
+    Path: "/",
     PageItem: <Following />,
     Exact: true
   },
