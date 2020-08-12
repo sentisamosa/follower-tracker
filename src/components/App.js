@@ -9,23 +9,27 @@ import Login from "./Login";
 const pages = [
   {
     Name: "Login",
-    Path: "/login",
-    PageItem: <Login />
+    Path: "/",
+    PageItem: <Login />,
+    Exact: true
   },
   {
     Name: "Following",
     Path: "/ifollow",
-    PageItem: <Following />
+    PageItem: <Following />,
+    Exact: true
   },
   {
     Name: "Follower",
     Path: "/followme",
-    PageItem: <Follower />
+    PageItem: <Follower />,
+    Exact: true
   },
   {
     Name: "Who Don't Follow",
     Path: "/notfollowingback",
-    PageItem: <NotFollowing />
+    PageItem: <NotFollowing />,
+    Exact: true
   }
 ];
 
@@ -38,7 +42,7 @@ class App extends Component {
         </Header>
         <Switch>
           {pages.map((item, key) => (
-            <Route path={item.Path} key={key}>
+            <Route path={item.Path} exact={item.Exact} key={key}>
               <div className="container">{item.PageItem}</div>
             </Route>
           ))}
